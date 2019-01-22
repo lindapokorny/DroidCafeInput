@@ -23,10 +23,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.LinkedList;
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        TextView textView = findViewById(R.id.textintro);
+        registerForContextMenu(textView);
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +76,29 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_context, menu);
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.context_edit:
+                displayToast("Edit choice clicked.");
+                return true;
+            case R.id.context_share:
+                displayToast("Share choice clicked.");
+                return true;
+            case R.id.context_delete:
+                displayToast("Delete choice clicked.");
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     /**
@@ -96,13 +125,25 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
         // This comment suppresses the Android Studio warning about simplifying
         // the return statements.
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_order:
+                Intent intent = new Intent(MainActivity.this, OrderActivity.class);
+                intent.putExtra(EXTRA_MESSAGE, mOrderMessage);
+                startActivity(intent);
+                return true;
+            case R.id.action_status:
+                displayToast(getString(R.string.action_status_message));
+                return true;
+            case R.id.action_favorites:
+                displayToast(getString(R.string.action_favorites_message));
+                return true;
+            case R.id.action_contact:
+                displayToast(getString(R.string.action_contact_message));
+                return true;
+            default:
         }
 
         return super.onOptionsItemSelected(item);
